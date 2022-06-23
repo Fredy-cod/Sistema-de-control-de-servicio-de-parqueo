@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8"/>
+        <meta author="Fredy Goolberth Quispe Neira"/>
+        <meta keywords="database, ..."/>
+        <link rel="stylesheet" type="text/css" href="../css/layout.css"/>
+        <script type="text/javascript" language="javascript" src="../js/layout.js"></script>
+    </head>
+    <body>
+        <header id="title">
+            {% block title%}{% endblock %}
+        </header>
+        <nav id="menu">
+            {% block menu %}{% endblock %}
+        </nav>
+        <aside id="aside">
+            {% block aside %}{% endblock %}
+        </aside>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+        <footer id="footer">
+            {% block footer %}{% endblock %}
+        </footer>
+    </body>
+</html>
