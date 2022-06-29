@@ -3,25 +3,20 @@
     <head>
         <meta charset="utf-8"/>
         <meta author="Fredy Goolberth Quispe Neira"/>
-        <meta keywords="database, ..."/>
-        <link rel="stylesheet" type="text/css" href="../css/layout.css"/>
-        <script type="text/javascript" language="javascript" src="../js/layout.js"></script>
+        <meta keywords="PyMySQL, CSS, HTML, JS, Python, Flask"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"/>
+        {% block style_css %}{% endblock %}
+        <script type="text/javascript" language="javascript" srrc="{{ url_for('static', filename='js/layout.js') }}"></script>
     </head>
     <body>
         <header id="title">
-            {% block title%}{% endblock %}
+            Sistema De Control de Servicio de Parqueo
         </header>
-        <nav id="menu">
-            {% block menu %}{% endblock %}
-        </nav>
-        <aside id="aside">
-            {% block aside %}{% endblock %}
-        </aside>
-        <div id="content">
-            {% block content %}{% endblock %}
-        </div>
+        <div id="div">{%block content%}{% endblock %}</div>
         <footer id="footer">
-            {% block footer %}{% endblock %}
+            <a href="/">Libro de Reclamaciones</a>
+            <p><a href="mailto: fredy.quispe@ucsp.edu.pe">Contáctanos</a></p>
+            <p>Todos los Derechos Reservados 2022-01</p>
         </footer>
     </body>
 </html>

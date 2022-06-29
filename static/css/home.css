@@ -1,0 +1,20 @@
+#home_content {
+    display: block;
+    box-sizing: border-box;
+}
+
+#menu {
+    text-align: right;
+    background-color: rgb(132, 177, 218);
+    height: auto;
+    border-radius: 0.8rem;
+    padding: 1rem 0.2rem;
+}
+
+#menu_buttons {
+    list-style: none;
+}
+
+#presentation {
+    min-height: 80rem;
+}

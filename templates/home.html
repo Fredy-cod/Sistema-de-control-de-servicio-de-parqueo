@@ -1,5 +1,15 @@
 {% extends "layout.html" %}
 
+{% block style_css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">{% endblock %}
 
-{% block title %}<p>{{ message }}</p>
+{% block content %}
+    <div id="home_content">
+        <menu id="menu">
+            <ul id="menu_buttons">
+                <li><a class="button" href="{{ url_for('login') }}"><i class="fa-solid fa-right-to-bracket"></i>Iniciar Sesión</a></li>
+            </ul>
+        </menu>
+        <div id="presentation"></div>
+    </div>
 {% endblock %}
