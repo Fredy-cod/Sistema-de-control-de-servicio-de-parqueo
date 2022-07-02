@@ -1,3 +1,43 @@
 #login_content {
-    min-height: 75rem;
+    min-height: 65rem;
+    background-color: rgb(30, 253, 253);
+    border-radius: 0.8rem;
+    margin: auto;
+    padding: 1.2rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+image {
+    width: auto;
+}
+
+#login_form {
+    width: 24rem;
+    padding: 0.8rem;
+    margin: auto auto;
+    border-radius: 0.8rem;
+    background-color: rgba(255, 255, 255, 0.3);
+    text-align: left;
+}
+
+label {
+    padding-bottom: 0.4rem;
+    box-sizing: border-box;
+}
+
+input {
+    padding: 0.2rem;
+    margin-bottom: 0.8rem;
+    width: 80%;
+    border-radius: o.3rem;
+    box-sizing: border-box;
+}
+
+input[type="radio"]{
+    width: auto;
+}
+
+#submit {
+    text-align: center;
 }

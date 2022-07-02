@@ -1,0 +1,77 @@
+#container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:"menu menu"
+                        "aside content";
+}
+
+#menu {
+    text-align: right;
+    background-color: rgb(132, 177, 218);
+    height: auto;
+    border-radius: 0.8rem;
+    padding: 1rem 0.2rem;
+    grid-area: menu;
+}
+
+#aside {
+    grid-area: aside;
+    background-color: green;
+}
+
+#aside_menu {
+    list-style: none;
+}
+
+.sel_option {
+    padding: 0.8rem;
+    margin-left: 0.8rem;
+    border-radius: 0.3rem 0rem 0rem 0.3rem;
+}
+
+#main_content {
+    grid-area: content;
+    min-height: 70rem;
+}
+
+a {
+    padding: 0.5rem;
+    margin: 0.1rem;
+}
+
+input {
+    margin-bottom: 0.4rem;
+}
+
+/*Configuración 1*/
+#content1 {
+    grid-template-columns: 3fr 1fr;
+    grid-template-areas: "create_ticket customers_table";
+}
+
+#create_ticket {
+    grid-area: create_ticket;
+}
+#customers_table {
+    grid-area: customers_table;
+}
+
+/*Configuración 2*/
+
+
+
+/*Configuración 3*/
+
+
+
+/*Configuración 4*/
+
+
+
+/*Configuración 5*/
+
+.main_contents {
+    padding: 1rem;
+    display: none;
+}

@@ -1,17 +1,63 @@
 {% extends "layout.html" %}
 
 {% block style_css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />{% endblock %}
+{% block script %}<script src="{{ url_for('static', filename='js/main.js') }}" ></script>{% endblock %}
 
 {% block content %}
+<div id="container">
     <menu id="menu">
 
     </menu>
     <aside id="aside">
-
+        <li id="aside_menu">
+            <ul id="option1" class="sel_option"><a href="#">Generar Ticket de Estacionamiento</a></ul>
+            <ul id="option2" class="sel_option"><a href="#">Ver Historial de Tickets</a></ul>
+            <ul id="option3" class="sel_option"><a href="#">Ver Clientes Registrados</a></ul>  
+            <ul id="option4" class="sel_option"><a href="#">Ver Vehículos Dentro del Estacionamiento</a></ul>   
+        </li>
     </aside>
     <div id="main_content">
-        <div id="">
-
+        <div id="default_content">
+            Contenido por defecto
+        </div>
+        <div id="content1" class="main_contents">
+            <section id="create_ticket">
+                <p class="subtitle">Rellene los campos necesarios</p>
+                <form action="" method="post">
+                    <label for="customer_id">ID del cliente: </label>
+                    <input type="text" name="customer_id" id="customer_id" placeholder="Ingrese el ID"><br>
+                    <label for="in_hour">Hora de Ingreso: </label>
+                    <input type="time" name="in_hour" id="in_hour" required><br>
+                    <label for="out_hour">Hora de Salida: </label>
+                    <input type="time" name="out_hour" id="out_hour" required><br>
+                
+                    <input type="submit" value="Generar ticket" class="button">
+                </form>
+            </section>
+            <section id="customers_table">
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>NOMBRES</th>
+                    </tr>
+                    {% for i in customers %}
+                        <tr>
+                            <td>{{ i[0] }}</td>
+                            <td>{{ i[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </section>
+        </div>
+        <div id="content2" class="main_contents">
+            content2
+        </div>
+        <div id="content3" class="main_contents">
+            content3
+        </div>
+        <div id="content4" class="main_contents">
+            content4
         </div>
     </div>
+</div>
 {% endblock %}
