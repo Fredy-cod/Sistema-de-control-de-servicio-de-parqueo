@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block style_css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/logout.css') }}" />{% endblock %}
+{% block script %}<script src="{{ url_for('static', filename='js/logout.js') }}" ></script>{% endblock %}
+
+{% block content %}
+    <div id="logout_content">
+        <p><h3>Su sesión ha concluido con éxito.</h3><br>
+        <a href=" redirect(url_for('home.html')) " class="button">Volver al inicio</a></p>
+    </div>
+{% endblock %}

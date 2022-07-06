@@ -8,8 +8,8 @@ class database:
     def addRecord(self, table, values):
         '''Añade un registro con los valores 'value' a la tabla 'table'.'''
         try:
-            self.cursor.execute(f"""INSERT INTO %s 
-                                    VALUES %s;""", table, values)
+            self.cursor.execute(f"""INSERT INTO {table} 
+                                    VALUES {tuple(values)}""")
             self.db.commit()
         except ValueError:
             print(f'Error en la inserción a la tabla {table}')
@@ -21,7 +21,7 @@ class database:
         try:
             for i in listValues:
                 self.cursor.execute(f"""INSERT INTO {table} 
-                                        VALUES {listValues[i]};""")
+                                        VALUES {tuple(listValues[i])};""")
                 self.db.commit()
         except ValueError:
             print(f'Error en la inserción a la tabla {table}')
@@ -51,6 +51,36 @@ class database:
         finally:
             pass
             #self.cursor.close()
+    def deleteRecords(self, table, condition):
+        '''Elimina los registros de la tabla TABLE con una CONDITION.'''
+        try:
+            self.cursor.execute(f"""DELETE FROM {table}
+                                    WHERE {condition}""")
+        except ValueError:
+            print("Error en la eliminación")
+        finally:
+            pass
+    def join(self, *args):
+        '''Retorna un string con el QUERY indicado para realizar una consulta SQL.
+            Ejemplo:
+            join("casas", "veredas", "postes"...):
+            Retorna: "casas INNER JOIN veredas ON casas.id_casa = veredas.id_casa INNER JOIN postes ON veredas.id_vereda = postes.id_vereda".'''
+        query= f"{args[0]} INNER JOIN "
+        for index in range(1, len(args)):
+            query += f"INNER JOIN {args[index]} ON {args[index-1]}.id_{args[index-1][:-1]} = {args[index]}.id_{args[index-1][:-1]} "
+        return query
+    def filter(self, table, **kwargs):
+        query = f"SELECT * FROM {table}"
+        i = 0
+        for key, value in kwargs.items():
+            if i == 0:
+                query += " WHERE "
+            else:
+                query += " AND "
+            query += "{}='{}'".format(key, value)
+            i += 1
+        query += ";"
+        return query
     def close(self):
         '''Cierra la conexión con el servidor.'''
         self.db.close()
