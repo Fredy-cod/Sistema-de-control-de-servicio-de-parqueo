@@ -1,7 +1,5 @@
 from flask import Flask, render_template, session, redirect, request, url_for
-from flask_session import Session
 from lib.database import database
-from datetime import datetime
 
 #variables generales del servidor de BBDD
 kwargs= {
@@ -32,17 +30,26 @@ def login():
 
 @app.route("/main", methods=["GET", "POST"])
 def main():
+    join_str=db.join("propietarios", "vehiculos")
     if request.method=="POST" and not "username" in session:
-        session["username"]= request.form.get("user")
-        cadena=db.join("propietarios", "vehiculos")
-        return render_template("main.html", customers= db.getRecords("placa, nombre_completo", cadena))        
-    else:
-        return redirect(url_for("init"))
+        username= request.form.get("username")
+        password= request.form.get("password")
+        users= db.getRecords("nombre_usuario, contrasenha", "playas")
+        return render_template("main.html", customers= db.getRecords("placa, nombre_completo", join_str)) #Eliminar para verificación
+        for i in users:
+            if i[1] == password and i[0] == username:
+                session["username"]= username
+                return render_template("main.html", customers= db.getRecords("placa, nombre_completo", join_str))   
+    elif "username" in session:
+        return render_template("main.html", customers= db.getRecords("placa, tipo, nombre_completo", join_str)) 
+    return redirect(url_for("login"))
 
 @app.route("/logout")
 def logout():
-    #Eliminar el elemento user
+    if "username" in session:
+        session.clear()
     return redirect(url_for("init"))
+
 
 if __name__=="__main__":
     app.run(debug=True)

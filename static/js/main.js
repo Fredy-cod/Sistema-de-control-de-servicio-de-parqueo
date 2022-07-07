@@ -10,45 +10,45 @@ default_content= document.getElementById('default_content');
 
 option1.onclick=()=>{
     default_content.style.display= 'none';
-    option1.style.backgroundColor= 'white';
+    option1.style.backgroundColor= 'var(--content_color)';
     content1.style.display= 'grid';
-    option2.style.backgroundColor= 'green';
+    option2.style.backgroundColor= 'var(--aside_color)';
     content2.style.display= 'none';
-    option3.style.backgroundColor= 'green';
+    option3.style.backgroundColor= 'var(--aside_color)';
     content3.style.display= 'none';
-    option4.style.backgroundColor= 'green';
+    option4.style.backgroundColor= 'var(--aside_color)';
     content4.style.display= 'none';
 }
 option2.onclick=()=>{
     default_content.style.display= 'none';
-    option2.style.backgroundColor= 'white';
+    option2.style.backgroundColor= 'var(--content_color)';
     content2.style.display= 'grid';
-    option1.style.backgroundColor= 'green';
+    option1.style.backgroundColor= 'var(--aside_color)';
     content1.style.display= 'none';
-    option3.style.backgroundColor= 'green';
+    option3.style.backgroundColor= 'var(--aside_color)';
     content3.style.display= 'none';
-    option4.style.backgroundColor= 'green';
+    option4.style.backgroundColor= 'var(--aside_color)';
     content4.style.display= 'none';
 }
 option3.onclick=()=>{
     default_content.style.display= 'none';
-    option3.style.backgroundColor= 'white';
+    option3.style.backgroundColor= 'var(--content_color)';
     content3.style.display= 'grid';
-    option1.style.backgroundColor= 'green';
+    option1.style.backgroundColor= 'var(--aside_color)';
     content1.style.display= 'none';
-    option2.style.backgroundColor= 'green';
+    option2.style.backgroundColor= 'var(--aside_color)';
     content2.style.display= 'none';
-    option4.style.backgroundColor= 'green';
+    option4.style.backgroundColor= 'var(--aside_color)';
     content4.style.display= 'none';
 }
 option4.onclick=()=>{
     default_content.style.display= 'none';
-    option4.style.backgroundColor= 'white';
+    option4.style.backgroundColor= 'var(--content_color)';
     content4.style.display= 'grid';
-    option2.style.backgroundColor= 'green';
+    option2.style.backgroundColor= 'var(--aside_color)';
     content2.style.display= 'none';
-    option3.style.backgroundColor= 'green';
+    option3.style.backgroundColor= 'var(--aside_color)';
     content3.style.display= 'none';
-    option1.style.backgroundColor= 'green';
+    option1.style.backgroundColor= 'var(--aside_color)';
     content1.style.display= 'none';
 }

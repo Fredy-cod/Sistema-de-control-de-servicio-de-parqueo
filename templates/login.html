@@ -7,14 +7,14 @@
 <div id="login_content">
     <h3>Sea ud. bienvenido, por favor inicie sesión para continuar.</h3>
     <form id="login_form" action="{{ url_for('main') }}" method='post' ><b>
-        <label>Nombre de usuario<br><input type="text" name="username" required placeholder="Escriba aquí el nombre de usuario" /></label><br>
-        <label>Contraseña de usuario<br><input type="password" name="password" required placeholder="Escriba aquí la contraseña" /></label><br>
-        <label>Seleccione el tipo de <b>Usuario</b></label><br>
+        <label><i class="fa fa-user"></i> Nombre de usuario<br><input type="text" name="username" required placeholder="Escriba aquí el nombre de usuario" /></label><br>
+        <label><i class="fa fa-key"></i> Contraseña de usuario<br><input type="password" name="password" required placeholder="Escriba aquí la contraseña" /></label><br>
+        <label><i class="fa fa-user-lock"></i> Seleccione el tipo de <b>Usuario</b></label><br>
         <input type="radio" id="employee" name="user_type" value="employee" checked>
         <label for="employee">Empleado</label>
         <input type="radio" id="admin" name="user_type" value="admin">
         <label for="admin">Administrador</label>
-        <section id="buttonContainer" style="text-align: center; grid-area: button;"><input type="submit" id="submit" class="button" value="Enviar" ></section>
+        <section id="buttonContainer" style="text-align: center; grid-area: button;"><input type="submit" id="submit" class="button" value="Enviar Formulario" ></section>
     </form>
 </div>
 {% endblock %}

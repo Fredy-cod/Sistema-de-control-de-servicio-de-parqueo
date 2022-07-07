@@ -3,13 +3,20 @@ html {
     font-size: 14px;
 }
 
-body {
+body {  
+    text-align: center;
     margin: 0;
     padding: 0;
     font-family: 'Times New Roman', Times, serif;
+    background-color: rgb(14, 58, 97);
+}
+
+#body {
     font-style: normal;
     display: block;
     text-align: center;
+    max-width: 70%;
+    margin: auto;
 }
 
 menu {
@@ -18,7 +25,7 @@ menu {
 
 #title {
     padding: 2rem;
-    border-radius: 0.8rem 0.8rem 0rem  0rem;
+    border-radius: 2rem 2rem 0rem  0rem;
     background-color: black;
     color: white;
     font-size: 3rem;
@@ -26,14 +33,14 @@ menu {
 
 #footer {
     padding: 2rem;
-    border-radius: 0rem 0rem 0.8rem 0.8rem;
+    border-radius: 0rem 0rem 2rem 2rem;
     background-color: black;
     color: white;
     font-size: 1.5rem;
 }
 
 .subtitle {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
 }
 
@@ -44,8 +51,9 @@ menu {
 
 .button {
     background-color: rgb(30, 30, 177);
-    color: rgb(255, 255, 255);
-    border-radius: 0.4rem;
+    color:rgb(140, 165, 189);
+    border-radius: 0.5rem;
+    border: 0.2rem rgb(1, 6, 255) solid;
     font-size: 1.2rem;
     padding: 0.3rem 0.5rem;
     margin: 0.5rem;
@@ -53,8 +61,8 @@ menu {
 }
 
 .button:hover {
+    color: rgb(255, 255, 255);
     background-color:rgb(1, 6, 255);
-    color:rgb(144, 162, 179);
 }
 
 a {
@@ -64,10 +72,6 @@ a {
     font-weight: bold;
     font-size: 1.2rem;
     padding: 0.3rem 0.5rem;
-}
-
-p {
-    font-size: 1rem;
 }
 
 h1 {
@@ -82,12 +86,24 @@ h3 {
     font-size: 1.5rem;
 }
 
+h4 {
+    font-size: 1rem;
+}
+
+h5 {
+    font-size: 0.8rem;
+}
+
+h6 {
+    font-size: 0.5rem;
+}
+
 table {
     border-spacing: 0;
 }
 
 td, th {
-    padding: 0.1rem;
+    padding: 0.1rem 0.5rem;
     border: 1px solid black;
 }
 

@@ -1,7 +1,6 @@
 #login_content {
     min-height: 65rem;
-    background-color: rgb(30, 253, 253);
-    border-radius: 0.8rem;
+    background-color: rgb(66, 114, 114);
     margin: auto;
     padding: 1.2rem;
     box-sizing: border-box;
@@ -13,10 +12,11 @@ image {
 }
 
 #login_form {
+    box-sizing: border-box;
     width: 24rem;
-    padding: 0.8rem;
+    padding: 0.8rem 3rem;
     margin: auto auto;
-    border-radius: 0.8rem;
+    border-radius: 4.5rem 1rem;
     background-color: rgba(255, 255, 255, 0.3);
     text-align: left;
 }

@@ -1,18 +1,17 @@
 #home_content {
     display: block;
     box-sizing: border-box;
+    background-color: white;
 }
 
 #menu {
     text-align: right;
     background-color: rgb(132, 177, 218);
-    height: auto;
-    border-radius: 0.8rem;
-    padding: 1rem 0.2rem;
+    padding: 0.3rem 0.2rem;
 }
 
 
 
 #presentation {
-    min-height: 80rem;
+    min-height: 65rem;
 }

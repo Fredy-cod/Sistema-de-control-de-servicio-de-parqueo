@@ -65,7 +65,7 @@ class database:
             Ejemplo:
             join("casas", "veredas", "postes"...):
             Retorna: "casas INNER JOIN veredas ON casas.id_casa = veredas.id_casa INNER JOIN postes ON veredas.id_vereda = postes.id_vereda".'''
-        query= f"{args[0]} INNER JOIN "
+        query= f"{args[0]} "
         for index in range(1, len(args)):
             query += f"INNER JOIN {args[index]} ON {args[index-1]}.id_{args[index-1][:-1]} = {args[index]}.id_{args[index-1][:-1]} "
         return query

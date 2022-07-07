@@ -5,19 +5,22 @@
         <meta author="Fredy Goolberth Quispe Neira"/>
         <meta keywords="PyMySQL, CSS, HTML, JS, Python, Flask"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/layout.css') }}"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
         {% block style_css %}{% endblock %}
         <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/layout.js') }}"></script>
     </head>
     <body>
-        <header id="title">
-            Sistema De Control de Servicio de Parqueo
-        </header>
-        <div id="content">{%block content%}{% endblock %}</div>
-        <footer id="footer">
-            <a href="/">Libro de Reclamaciones</a>
-            <p><a href="mailto: fredy.quispe@ucsp.edu.pe">Contáctanos</a></p>
-            <p>Todos los Derechos Reservados 2022-01</p>
-        </footer>
-        {% block script %}{% endblock %}
+        <div id="body">
+            <header id="title">
+                Sistema De Control de Servicio de Parqueo
+            </header>
+            <div id="content">{%block content%}{% endblock %}</div>
+            <footer id="footer">
+                <a href="/">Libro de Reclamaciones</a>
+                <p><a href="mailto: fredy.quispe@ucsp.edu.pe">Contáctanos</a></p>
+                <p><i class="fa fa-copyright"></i> Todos los Derechos Reservados 2022-01</p>
+            </footer>
+            {% block script %}{% endblock %}
+        </div>
     </body>
 </html>
