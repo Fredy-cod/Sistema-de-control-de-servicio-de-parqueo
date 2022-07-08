@@ -53,14 +53,16 @@ input {
 /*Configuración 1*/
 #content1 {
     grid-template-columns: 2fr 1fr;
-    grid-template-areas: "create_ticket customers_table";
+    grid-template-areas: "create_ticket cars_table";
 }
 
 #create_ticket {
     grid-area: create_ticket;
+    padding: 0.5rem;
 }
-#customers_table {
-    grid-area: customers_table;
+#cars_table {
+    grid-area: cars_table;
+    padding: 0.5rem;
 }
 
 /*Configuración 2*/

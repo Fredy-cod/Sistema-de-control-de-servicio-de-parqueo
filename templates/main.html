@@ -16,6 +16,7 @@
             <ul id="option2" class="sel_option"><a href="#"><i class="fa fa-clipboard-list"></i> Ver Historial de Tickets</a></ul>
             <ul id="option3" class="sel_option"><a href="#"><i class="fa fa-registered"></i> Ver Clientes Registrados</a></ul>  
             <ul id="option4" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Ver Vehículos Dentro del Estacionamiento</a></ul>   
+            <ul id="option5" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Administrar empleados</a></ul>   
         </li>
     </aside>
     <div id="main_content">
@@ -27,16 +28,15 @@
                 <p class="subtitle">Rellene los campos necesarios</p>
                 <form action="" method="post">
                     <label for="car_id">Placa del Vehículo: </label>
-                    <input type="text" name="car_id" id="car_id" placeholder="Ingrese la placa del vehículo"><br>
+                    <input type="text" name="car_id" id="car_id" placeholder="Ingrese la placa."><br>
                     <label for="customer_id">ID del Cliente: </label>
-                    <input type="text" name="customer_id" id="customer_id" placeholder="Ingrese el ID del cliente"><br>
+                    <input type="text" name="customer_id" id="customer_id" placeholder="Ingrese el ID."><br>
                     <label for="in_hour">Hora de Ingreso: </label>
                     <input type="time" name="in_hour" id="in_hour" required><br>
-                    
                     <input type="submit" value="Generar ticket" class="button">
                 </form>
             </section>
-            <section id="customers_table">
+            <section id="cars_table">
                 <p class="subtitle">Historial de vehículos registrados</p>
                 <table>
                     <tr>
