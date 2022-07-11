@@ -50,12 +50,21 @@ input {
     margin-bottom: 0.4rem;
 }
 
+#option1 {
+    background-color: var(--content_color);
+}
+
+.main_contents {
+    padding: 1rem;
+    display: none;
+}
+
 /*Configuración 1*/
 #content1 {
+    display: grid;
     grid-template-columns: 2fr 1fr;
     grid-template-areas: "create_ticket cars_table";
 }
-
 #create_ticket {
     grid-area: create_ticket;
     padding: 0.5rem;
@@ -78,8 +87,3 @@ input {
 
 
 /*Configuración 5*/
-
-.main_contents {
-    padding: 1rem;
-    display: none;
-}

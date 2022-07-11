@@ -16,17 +16,15 @@
             <ul id="option2" class="sel_option"><a href="#"><i class="fa fa-clipboard-list"></i> Ver Historial de Tickets</a></ul>
             <ul id="option3" class="sel_option"><a href="#"><i class="fa fa-registered"></i> Ver Clientes Registrados</a></ul>  
             <ul id="option4" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Ver Vehículos Dentro del Estacionamiento</a></ul>   
-            <ul id="option5" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Administrar empleados</a></ul>   
+            <ul id="option5" class="sel_option"><a href="#"><i class="fa fa-user-lock"></i> Administrar empleados</a></ul>   
         </li>
     </aside>
     <div id="main_content">
-        <div id="default_content">
-            Contenido por defecto
-        </div>
         <div id="content1" class="main_contents">
             <section id="create_ticket">
                 <p class="subtitle">Rellene los campos necesarios</p>
-                <form action="" method="post">
+                <form action="{{ url_for('main') }}" method="post">
+                    <input type="hidden" name="form_name" value="ticket_generate">
                     <label for="car_id">Placa del Vehículo: </label>
                     <input type="text" name="car_id" id="car_id" placeholder="Ingrese la placa."><br>
                     <label for="customer_id">ID del Cliente: </label>
@@ -67,6 +65,40 @@
         </div>
         <div id="content4" class="main_contents">
             content4
+        </div>
+        <div id="content5" class="main_contents">
+            <section id="validation_form">
+                <form action="{{ url_for('main') }}">
+                    <input type="hidden" name="form_name" value="validation_5">
+                    <label for="password">Ingrese la contraseña del administrador<br>para realizar cambios:</label><br>
+                    <input type="password" placeholder="Ingrese la contraseña" required><br>
+                    <input type="submit" class="button" value="Validar Contraseña">
+                </form>
+            </section>
+            <section id="employees_table">
+                <p class="subtitle">Historial de empleados que trabajan en la playa</p>
+                <table>
+                    <tr>
+                        <th>DOC. DE IDENTIDAD</th>
+                        <th>NOMBRES Y APELLIDOS</th>
+                        <th>TELÉFONO</th>
+                        <th>SALARIO</th>
+                    </tr>
+                    {% for i in employees %}
+                        <tr>
+                            <td>{{ i[0] }}</td>
+                            <td>{{ i[1] }}</td>
+                            <td>{{ i[2] }}</td>
+                            <td>{{ i[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if employees.size == 0 %}
+                    <th>
+                        <b>Sin datos registrados.</b>
+                    </th>
+                {% endif %}
+            </section>
         </div>
     </div>
 </div>

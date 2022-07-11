@@ -6,7 +6,7 @@ kwargs= {
     "host":"127.0.0.1",
     "port":3306,
     "user":"root",
-    "password":"sanpablo22",
+    "password":"sanpablo2022",
     "db_name":"parkingSystem"
     }
 
@@ -30,16 +30,17 @@ def login():
 
 @app.route("/main", methods=["GET", "POST"])
 def main():
-    join_str=db.join("propietarios", "vehiculos")
+    join_str=db.join("abonados", "vehiculos")
     if request.method=="POST" and not "username" in session:
         username= request.form.get("username")
         password= request.form.get("password")
-        users= db.getRecords("nombre_usuario, contrasenha", "playas")
-        return render_template("main.html", customers= db.getRecords("placa, nombre_completo", join_str)) #Eliminar para verificación
+        users= db.getRecords("nombre_usuario, contrasenha, id_playa", "playas")
+        return render_template("main.html", customers= db.getRecords("placa, tipo, nombre_completo", join_str), employees= db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", "id_playa=4000")) #Eliminar para verificación
         for i in users:
             if i[1] == password and i[0] == username:
                 session["username"]= username
-                return render_template("main.html", customers= db.getRecords("placa, nombre_completo", join_str))   
+                return render_template("main.html", customers= db.getRecords("placa, tipo, nombre_completo", join_str), 
+                                                    employees= db.getConditionalRecords("doc_id, nombre_completo, telefono, salario", "empleados", f"id_playa={users[2]}"))   
     elif "username" in session:
         return render_template("main.html", customers= db.getRecords("placa, tipo, nombre_completo", join_str)) 
     return redirect(url_for("login"))
