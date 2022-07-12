@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 
 {% block style_css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />{% endblock %}
-{% block script %}<script src="{{ url_for('static', filename='js/main.js') }}" ></script>{% endblock %}
-
+{% block script %}<script src="{{ url_for('static', filename='js/main.js') }}" ></script>
+<script> window.addEventListener('load', enabled_admin_buttons("{{ admin_validated }}")) </script>{% endblock %}
+<script>
+    
+</script>
 {% block content %}
 <div id="container">
     <menu id="menu">
@@ -22,12 +25,12 @@
     <div id="main_content">
         <div id="content1" class="main_contents">
             <section id="create_ticket">
-                <p class="subtitle">Rellene los campos necesarios</p>
+                <p class="subtitle">Generar Ticket de Entrada</p>
                 <form action="{{ url_for('main') }}" method="post">
                     <input type="hidden" name="form_name" value="ticket_generate">
                     <label for="car_id">Placa del Vehículo: </label>
                     <input type="text" name="car_id" id="car_id" placeholder="Ingrese la placa."><br>
-                    <label for="customer_id">ID del Cliente: </label>
+                    <label for="customer_id">ID del Abonado: </label>
                     <input type="text" name="customer_id" id="customer_id" placeholder="Ingrese el ID."><br>
                     <label for="in_hour">Hora de Ingreso: </label>
                     <input type="time" name="in_hour" id="in_hour" required><br>
@@ -50,7 +53,7 @@
                         </tr>
                     {% endfor %}
                 </table>
-                {% if customers.size == 0 %}
+                {% if customers|count == 0 %}
                     <th>
                         <b>Sin datos registrados.</b>
                     </th>
@@ -67,12 +70,30 @@
             content4
         </div>
         <div id="content5" class="main_contents">
-            <section id="validation_form">
-                <form action="{{ url_for('main') }}">
-                    <input type="hidden" name="form_name" value="validation_5">
-                    <label for="password">Ingrese la contraseña del administrador<br>para realizar cambios:</label><br>
-                    <input type="password" placeholder="Ingrese la contraseña" required><br>
-                    <input type="submit" class="button" value="Validar Contraseña">
+            <section id="admin_validation">
+                <form action="{{ url_for('main') }}" method="post">
+                    <input type="hidden" name="form_name" value="admin_valid" required>
+                    <label for="admin_password"><p class="subtitle">!ATENCION!</p><h4>Para realizar algún cambio, debe validar<br>la contraseña del administrador.</h4></label><br>
+                    <input type="password" placeholder="Ingrese su contraseña" id="admin_password" name="admin_password" required><br>
+                    <button type="submit" class="button"><i class="fas fa-unlock"></i> Validar Contraseña</button>
+                </form>
+            </section>
+            <section id="admin_validated" style="display: none;">
+                <button class="button modify" onclick="this.style.display='none'">Administrador Validado <i class="fas fa-times"></i></button>
+            </section>
+            <section id="append_employee_form">
+                <form action="{{ url_for('main') }}" method="post">
+                    <p class="subtitle">Registrar Empleado</p>
+                    <input type="hidden" name="form_name" value="append_employee">
+                    <label for="doc_id">Ingrese el Documento de Identidad:</label>
+                    <input type="text" id="doc_id" name="doc_id" placeholder="DNI o carné de extranjería" required><br>
+                    <label for="fullname">Ingrese el Nombre Completo del Empleado:</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Ingrese los nombres y apellidos" required><br>
+                    <label for="phone">Ingrese el N° del Teléfono:</label>
+                    <input type="number" id="phone" name="phone" placeholder="Ingrese el teléfono" required><br>
+                    <label for="salary">Ingrese su Salario:</label>
+                    <input type="number" id="salary" name="salary" placeholder="Ejm: 999.99" required><br>
+                    <button type="submit" class="button blocked_admin_buttons" disabled="true"><i class="fas fa-unlock"></i> Registrar Empleado</button>
                 </form>
             </section>
             <section id="employees_table">
@@ -83,17 +104,20 @@
                         <th>NOMBRES Y APELLIDOS</th>
                         <th>TELÉFONO</th>
                         <th>SALARIO</th>
+                        <th>MODIFICAR DATOS</th>
                     </tr>
-                    {% for i in employees %}
+                    {% for index in range((employees|count)) %}
                         <tr>
-                            <td>{{ i[0] }}</td>
-                            <td>{{ i[1] }}</td>
-                            <td>{{ i[2] }}</td>
-                            <td>{{ i[3] }}</td>
+                            <td>{{ employees[index][0] }}</td>
+                            <td>{{ employees[index][1] }}</td>
+                            <td>{{ employees[index][2] }}</td>
+                            <td>{{ employees[index][3] }}</td>
+                            <td><button class="button delete blocked_admin_buttons" id="del_empl{{ index }}" disabled="true"><i class="fas fa-user-slash"></i> DEL</button>
+                                <button class="button modify blocked_admin_buttons" id="edit_empl{{ index }}" disabled="true"><i class="fas fa-user-edit"></i> MOD</button>
                         </tr>
                     {% endfor %}
                 </table>
-                {% if employees.size == 0 %}
+                {% if employees|count == 0 %}
                     <th>
                         <b>Sin datos registrados.</b>
                     </th>

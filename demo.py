@@ -1,8 +1,6 @@
 
 
-lista=[[1,2], [3,4], [5,6]]
+lista=["a", "b", "c", "d"]
 
-if 1 in lista[:]:
-    print("Si esta")
-else:
-    print("No está")
+for i,v in enumerate(lista):
+    print(i,"=",v)

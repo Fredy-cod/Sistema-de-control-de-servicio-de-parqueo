@@ -62,7 +62,7 @@ input {
 /*Configuración 1*/
 #content1 {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-areas: "create_ticket cars_table";
 }
 #create_ticket {
@@ -87,3 +87,17 @@ input {
 
 
 /*Configuración 5*/
+#admin_validation {
+    border-radius: 0.5rem;
+    background-color: rgba(200, 32, 32, 0.604);
+}
+#append_employee_form {
+    background-color: rgba(83, 108, 130, 0.519);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+    border-radius: 0.2rem;
+}
+.blocked_admin_buttons {
+    text-decoration:line-through;
+}

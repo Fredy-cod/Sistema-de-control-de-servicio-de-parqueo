@@ -61,3 +61,25 @@ option_list[4].onclick=()=>{
         }
     }
 };
+
+function enabled_admin_buttons(enabled){
+    var blockeds = document.querySelectorAll(".blocked_admin_buttons");
+    admin_validation= document.getElementById('admin_validation');
+    admin_validated= document.getElementById('admin_validated');
+    if (enabled == 1){
+        admin_validation.style.display= 'none';
+        admin_validated.style.display= 'block';
+        for (i=0; i<blockeds.length; i++){
+            blockeds[i].disabled= false;
+            blockeds[i].style.textDecoration= "none";
+        }
+    }
+    else {
+        admin_validation.style.display= 'block';
+        admin_validated.style.display= 'none';
+        for (i=0; i<blockeds.length; i++){
+            blockeds[i].disabled= true;
+            blockeds[i].style.textDecoration= "line-through";
+        }
+    }
+};

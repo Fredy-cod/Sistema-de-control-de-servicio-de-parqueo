@@ -1,5 +1,4 @@
 import pymysql
-import numpy as np
 
 class database:
     def __init__(self, host, port, user, password, db_name):
@@ -22,7 +21,7 @@ class database:
             for i in listValues:
                 self.cursor.execute(f"""INSERT INTO {table} 
                                         VALUES {tuple(listValues[i])};""")
-                self.db.commit()
+            self.db.commit()
         except ValueError:
             print(f'Error en la inserción a la tabla {table}')
         finally:
@@ -33,7 +32,7 @@ class database:
         try:
             self.cursor.execute(f"""SELECT {columns}
                                     FROM {table};""")
-            return np.array(self.cursor.fetchall())
+            return self.cursor.fetchall()
         except ValueError:
             print("Error en la consulta")
         finally:
@@ -45,7 +44,7 @@ class database:
             self.cursor.execute(f"""SELECT {columns} 
                                     FROM {table} 
                                     WHERE {conditions};""")
-            return np.array(self.cursor.fetchall())
+            return self.cursor.fetchall()
         except ValueError:
             print("Error en la consulta")
         finally:
