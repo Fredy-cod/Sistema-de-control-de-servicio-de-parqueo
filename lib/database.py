@@ -1,4 +1,6 @@
+import this
 import pymysql
+import json
 
 class database:
     def __init__(self, host, port, user, password, db_name):
@@ -8,25 +10,42 @@ class database:
         '''Añade un registro con los valores 'value' a la tabla 'table'.'''
         try:
             self.cursor.execute(f"""INSERT INTO {table} 
-                                    VALUES {tuple(values)}""")
+                                    VALUES {values};""")
             self.db.commit()
         except ValueError:
             print(f'Error en la inserción a la tabla {table}')
         finally:
             pass
             #self.cursor.close()
-    def addRecords(self, table, listValues):
-        '''Añade más de un registro con los valores 'value' a la tabla 'table'.'''
+    def addRecordIgnore(self, table, values):
+        '''Añade un registro con los valores 'value' a la tabla 'table'.'''
         try:
-            for i in listValues:
-                self.cursor.execute(f"""INSERT INTO {table} 
-                                        VALUES {tuple(listValues[i])};""")
+            self.cursor.execute(f"""INSERT IGNORE {table} 
+                                    VALUES {values};""")
             self.db.commit()
         except ValueError:
             print(f'Error en la inserción a la tabla {table}')
         finally:
             pass
-            #self.cursor.close()
+    def query_executor(self, function):
+        try:
+            self.cursor.execute(f"SELECT {function};")
+            return self.cursor.fetchone()
+        except ValueError:
+            pass
+        finally:
+            pass
+    def modRecords(self, table, values, condition):
+        '''Modifica un registro existente en 'table'.'''
+        try:
+            self.cursor.execute(f"""UPDATE {table} 
+                                    SET { values }
+                                    WHERE { condition };""")
+            self.db.commit()
+        except ValueError:
+            print(f'Error en la modificación a la tabla {table}')
+        finally:
+            pass
     def getRecords(self, columns, table):
         '''Obtiene la respuesta de una consulta SELECT de SQL.'''
         try:
@@ -50,6 +69,17 @@ class database:
         finally:
             pass
             #self.cursor.close()
+    def getConditionalRecord(self, columns, table, conditions):
+        '''Obtiene un registro de una consulta SELECT condicionada de SQL.'''
+        try:
+            self.cursor.execute(f"""SELECT {columns} 
+                                    FROM {table} 
+                                    WHERE {conditions};""")
+            return self.cursor.fetchone()
+        except ValueError:
+            print("Error en la consulta")
+        finally:
+            pass
     def deleteRecords(self, table, condition):
         '''Elimina los registros de la tabla TABLE con una CONDITION.'''
         try:
@@ -83,3 +113,24 @@ class database:
     def close(self):
         '''Cierra la conexión con el servidor.'''
         self.db.close()
+    """
+    def addRecords(self, table, listValues):
+        '''Añade más de un registro con los valores 'value' a la tabla 'table'.'''
+        try:
+            for i in listValues:
+                self.cursor.execute(f""""""INSERT INTO {table} 
+                                        VALUES {tuple(listValues[i])};"""""")
+            self.db.commit()
+        except ValueError:
+            print(f'Error en la inserción a la tabla {table}')
+        finally:
+            pass
+            #self.cursor.close()"""
+
+    def actualization(self, main_kwargs, join_car_abo, user_id):
+        main_kwargs={
+            "subscribers": self.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+            "employees": self.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={user_id}"),
+            "subscribers_ids": self.getRecords("id_abonado", "abonados"),
+            "boletas": self.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", self.join("tickets", "boletas"))
+        }

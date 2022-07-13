@@ -83,3 +83,32 @@ function enabled_admin_buttons(enabled){
         }
     }
 };
+
+function view_mod_data(name, index){
+    div= document.getElementById('empl_mod_data');
+    p= document.getElementById('empl_data')
+    if (div.style.display== 'none'){
+        div.style.display='block';
+        empl_data.innerHTML= 'Modificar Datos del Empleado: '+name;
+        document.getElementById('employee_id').value= index;
+    }
+    else {
+        div.style.display='none';
+    }
+}
+
+function sub_id_validate(list){
+    list= list.split(',), (');
+    subscriber_id= document.getElementById('subscriber_id');
+    button= document.getElementById('ticket_gen');
+    str_id= String(subscriber_id.value);
+    console.log(subscriber_id.value);
+    for (let i=0; i<list.length; i++){
+        if ( (list[i].includes(str_id) && str_id.length==4) || subscriber_id.value==''){
+            console.log(list[i]);
+            button.disabled= false;
+            return;
+        }
+        button.disabled= true;
+    }
+}

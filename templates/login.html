@@ -9,11 +9,6 @@
     <form id="login_form" action="{{ url_for('login') }}" method='post' ><b>
         <label><i class="fa fa-user"></i> Nombre de usuario<br><input type="text" name="username" required placeholder="Escriba aquí el nombre de usuario" /></label><br>
         <label><i class="fa fa-key"></i> Contraseña de usuario<br><input type="password" name="password" required placeholder="Escriba aquí la contraseña" /></label><br>
-        <label><i class="fa fa-user-lock"></i> Seleccione el tipo de <b>Usuario</b></label><br>
-        <input type="radio" id="employee" name="user_type" value="employee" checked>
-        <label for="employee">Empleado</label>
-        <input type="radio" id="admin" name="user_type" value="admin">
-        <label for="admin">Administrador</label>
         <section id="buttonContainer" style="text-align: center; grid-area: button;"><button type="submit" id="submit" class="button"><i class="fas fa-file-export"></i> Enviar Formulario</button></section>
     </form>
 </div>

@@ -17,7 +17,7 @@
         <li id="aside_menu">
             <ul id="option1" class="sel_option"><a href="#"><i class="fa fa-id-card"></i> Generar Ticket de Estacionamiento</a></ul>
             <ul id="option2" class="sel_option"><a href="#"><i class="fa fa-clipboard-list"></i> Ver Historial de Tickets</a></ul>
-            <ul id="option3" class="sel_option"><a href="#"><i class="fa fa-registered"></i> Ver Clientes Registrados</a></ul>  
+            <ul id="option3" class="sel_option"><a href="#"><i class="fa fa-registered"></i> Ver Historial de Boletas Generadas</a></ul>  
             <ul id="option4" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Ver Vehículos Dentro del Estacionamiento</a></ul>   
             <ul id="option5" class="sel_option"><a href="#"><i class="fa fa-user-lock"></i> Administrar empleados</a></ul>   
         </li>
@@ -29,31 +29,54 @@
                 <form action="{{ url_for('main') }}" method="post">
                     <input type="hidden" name="form_name" value="ticket_generate">
                     <label for="car_id">Placa del Vehículo: </label>
-                    <input type="text" name="car_id" id="car_id" placeholder="Ingrese la placa."><br>
-                    <label for="customer_id">ID del Abonado: </label>
-                    <input type="text" name="customer_id" id="customer_id" placeholder="Ingrese el ID."><br>
-                    <label for="in_hour">Hora de Ingreso: </label>
-                    <input type="time" name="in_hour" id="in_hour" required><br>
-                    <input type="submit" value="Generar ticket" class="button">
+                    <input type="text" name="car_id" id="car_id" placeholder="Ingrese la Placa del Vehículo." required><br>
+                    <label for="car_type">Tipo del Vehículo: </label>
+                    <input type="text" name="car_type" id="car_type" placeholder="Ingrese el Tipo del Vehículo." required><br>
+                    <label for="subscriber_id">ID del Abonado: </label>
+                    <input type="number" name="subscriber_id" id="subscriber_id" onkeyup="sub_id_validate('{{ subscribers_ids }}')" placeholder="Ingrese un ID existente."><br>
+                    <button type="submit" class="button" id="ticket_gen"><i class="fas fa-ticket-alt"></i> Generar Ticket</button>
+                    <p class="advertisement">*El ID del abonado no es un campo obligatorio.</p>
+                </form>
+            </section>
+            <section id="add_subscriber">
+                <p class="subtitle">Agregar Registro de Abonado</p>
+                <form action="{{ url_for('main') }}" method="post">
+                    <input type="hidden" name="form_name" value="add_subscriber">
+                    <label for="subs_fullname">Nombres y Apellidos: </label>
+                    <input type="text" name="subs_fullname" id="subs_fullname" placeholder="Ingrese los Nombres y Apellidos." required><br>
+                    <label for="subs_init">Fecha de Inicio: </label>
+                    <input type="date" name="subs_init" id="subs_init" placeholder="Ingrese la Fecha de Inicio." required><br>
+                    <label for="subs_end">Fecha de Término: </label>
+                    <input type="date" name="subs_end" id="subs_end" placeholder="Ingrese la Fecha de Término." required><br>
+                    <label for="subs_pension">Pensión: </label>
+                    <input type="number" name="subs_pension" id="subs_pension" placeholder="Ejm: 9999.99"><br>
+                    <button type="submit" class="button"><i class="fas fa-id-badge"></i> Registrar Abonado</button>
+                    <p class="advertisement">*Pensión no es un dato necesario.</p>
                 </form>
             </section>
             <section id="cars_table">
-                <p class="subtitle">Historial de vehículos registrados</p>
+                <p class="subtitle">Historial de Abonados Registrados</p>
                 <table>
                     <tr>
+                        <th>ID DEL ABONADO</th>
+                        <th>NOMBRES Y APELLIDOS</th>
+                        <th>FECHA DE INICIO</th>
+                        <th>FECHA DE TÉRMINO</th>
                         <th>PLACA</th>
-                        <th>TIPO</th>
-                        <th>PROPIETARIO</th>
+                        <th>TIPO DE VEHÍCULO</th>
                     </tr>
-                    {% for i in customers %}
+                    {% for i in subscribers %}
                         <tr>
                             <td>{{ i[0] }}</td>
                             <td>{{ i[1] }}</td>
                             <td>{{ i[2] }}</td>
+                            <td>{{ i[3] }}</td>
+                            <td>{{ i[4] }}</td>
+                            <td>{{ i[5] }}</td>
                         </tr>
                     {% endfor %}
                 </table>
-                {% if customers|count == 0 %}
+                {% if subscribers|count == 0 %}
                     <th>
                         <b>Sin datos registrados.</b>
                     </th>
@@ -64,7 +87,35 @@
             content2
         </div>
         <div id="content3" class="main_contents">
-            content3
+            <section id="tickets_quantity">
+                <p class="subtitle">Historial de Boletas Generadas</p>
+                <h4>Cantidad: {{ boletas|count }}</h4>
+            </section>
+            <section id="tickets_table">
+                <table>
+                    <tr>
+                        <th>ID BOLETA</th>
+                        <th>PLACA</th>
+                        <th>HORA DE INGRESO</th>
+                        <th>HORA DE SALIDA</th>
+                        <th>PRECIO</th>
+                    </tr>
+                    {% for i in boletas %}
+                        <tr>
+                            <td>{{ i[0] }}</td>
+                            <td>{{ i[1] }}</td>
+                            <td>{{ i[2] }}</td>
+                            <td>{{ i[3] }}</td>
+                            <td>{{ i[4] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if boletas|count == 0 %}
+                    <th>
+                        <b>Sin datos registrados.</b>
+                    </th>
+                {% endif %}
+            </section>
         </div>
         <div id="content4" class="main_contents">
             content4
@@ -78,8 +129,8 @@
                     <button type="submit" class="button"><i class="fas fa-unlock"></i> Validar Contraseña</button>
                 </form>
             </section>
-            <section id="admin_validated" style="display: none;">
-                <button class="button modify" onclick="this.style.display='none'">Administrador Validado <i class="fas fa-times"></i></button>
+            <section id="admin_validated" style="display: none;" onclick="this.style.display='none'">
+                <button class="button modify">Administrador Validado <i class="fas fa-times"></i></button>
             </section>
             <section id="append_employee_form">
                 <form action="{{ url_for('main') }}" method="post">
@@ -92,7 +143,7 @@
                     <label for="phone">Ingrese el N° del Teléfono:</label>
                     <input type="number" id="phone" name="phone" placeholder="Ingrese el teléfono" required><br>
                     <label for="salary">Ingrese su Salario:</label>
-                    <input type="number" id="salary" name="salary" placeholder="Ejm: 999.99" required><br>
+                    <input type="number" id="salary" name="salary" placeholder="Ejm: 9999.99" required><br>
                     <button type="submit" class="button blocked_admin_buttons" disabled="true"><i class="fas fa-unlock"></i> Registrar Empleado</button>
                 </form>
             </section>
@@ -112,8 +163,13 @@
                             <td>{{ employees[index][1] }}</td>
                             <td>{{ employees[index][2] }}</td>
                             <td>{{ employees[index][3] }}</td>
-                            <td><button class="button delete blocked_admin_buttons" id="del_empl{{ index }}" disabled="true"><i class="fas fa-user-slash"></i> DEL</button>
-                                <button class="button modify blocked_admin_buttons" id="edit_empl{{ index }}" disabled="true"><i class="fas fa-user-edit"></i> MOD</button>
+                            <td class="employee_buttons"><form action="{{ url_for('main') }}" method="post">
+                                <input type="hidden" name="form_name" value="delete_employee">
+                                <input type="hidden" name="employee_id" value="{{ employees[index][0] }}">
+                                <button class="button delete blocked_admin_buttons" type="submit" disabled="true"><i class="fas fa-user-edit"></i> DEL</button>
+                            </form>
+                            <button class="button modify blocked_admin_buttons" id="edit_empl{{ index }}" onclick="view_mod_data('{{ employees[index][1] }}','{{ employees[index][0] }}')" disabled="true"><i class="fas fa-user-edit"></i> MOD</button>
+                            </td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -122,6 +178,20 @@
                         <b>Sin datos registrados.</b>
                     </th>
                 {% endif %}
+            </section>
+            <section id="empl_mod_data" style="display: none;">
+                <p class="subtitle" id="empl_data"></p>
+                <form action="{{ url_for('main') }}" method="post">
+                    <input type="hidden" name="form_name" value="modify_employee">
+                    <input type="hidden" name="employee_id" id="employee_id" value="">
+                    <label for="phone">Ingrese el Nuevo Teléfono del Empleado: </label>
+                    <input type="number" name="new_phone" id="new_phone" placeholder="Ingrese el N° Teléfono"><br>
+                    <label for="salary">Ingrese el Nuevo Salario del Empleado:</label>
+                    <input type="number" name="new_salary" id="new_salary" placeholder="Ejm: 9999.99"><br>
+                    <button class="button modify blocked_admin_buttons" type="submit"><i class="fa fa-user-pen"></i> Modificar Datos</button>
+                    <p class="advertisement">*Los campos que no son rellenados no serán cambiados.</p>
+                    <p class="advertisement">*Los campos <b>Documento de Identidad</b> y <b>Nombres y Apellidos</b> son INMUTABLES.</p>
+                </form>
             </section>
         </div>
     </div>

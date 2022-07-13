@@ -63,15 +63,25 @@ input {
 #content1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas: "create_ticket cars_table";
+    grid-template-rows: auto auto;
+    grid-template-areas: "create_ticket add_subscriber"
+                         "cars_table cars_table";
+    grid-gap: 0.2rem;
 }
 #create_ticket {
     grid-area: create_ticket;
-    padding: 0.5rem;
 }
 #cars_table {
     grid-area: cars_table;
+}
+#add_subscriber {
+    grid-area: add_subscriber;
+}
+
+section {
+    background-color: rgba(68, 80, 91, 0.243);
     padding: 0.5rem;
+    border-radius: 0.5rem;
 }
 
 /*Configuración 2*/
@@ -93,11 +103,25 @@ input {
 }
 #append_employee_form {
     background-color: rgba(83, 108, 130, 0.519);
+    margin-top: 1.5rem;
     margin-left: auto;
     margin-right: auto;
     padding: 1rem;
-    border-radius: 0.2rem;
+    border-radius: 0.3rem;
+}
+#employees_table {
+    margin-top: 1rem;
 }
 .blocked_admin_buttons {
     text-decoration:line-through;
+}
+.employee_buttons {
+    display:inline-flex;
+}
+#empl_mod_data {
+    background-color: rgba(18, 111, 193, 0.652);
+    border-radius: 0.3rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 1rem;
 }

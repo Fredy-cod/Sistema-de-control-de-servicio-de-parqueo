@@ -2,6 +2,8 @@
 from flask import Flask, render_template, session, redirect, request, url_for
 #from importlib_metadata import method_cache
 from lib.database import database
+from datetime import datetime
+import json
 
 #variables generales del servidor de BBDD
 kwargs= {
@@ -9,7 +11,7 @@ kwargs= {
     "port":3306,
     "user":"root",
     "password":"sanpablo2022",
-    "db_name":"parkingSystem"
+    "db_name":"parking"
     }
 
 db= database(**kwargs)
@@ -22,6 +24,7 @@ app= Flask(__name__)
 app.secret_key="sanpablo22"
 
 #Variables globales
+admin_validated=0
 join_car_abo=db.join("abonados", "vehiculos")
 
 @app.route("/")
@@ -36,54 +39,95 @@ def login():
         username= request.form.get("username")
         password= request.form.get("password")
         users= db.getRecords("nombre_usuario, contrasenha, id_playa", "playas")
-        #return render_template("main.html", customers= db.getRecords("placa, tipo, nombre_completo", join_str), 
-        #                        employees= db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", "id_playa=4000")) #Eliminar para verificación
         for i in users:
             if i[1] == password and i[0] == username:
                 session["username"]= i[0]
                 session["user_id"]= int(i[2])
                 main_kwargs={
-                    "customers": db.getRecords("placa, tipo, nombre_completo", join_car_abo),
+                    "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
                     "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
-                    "subscribers_ids": db.getRecords("id_abonado", "abonados")
+                    "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                    "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas"))
                 }
-                return render_template("main.html", admin_validated=0, **main_kwargs)
+                return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
     return render_template("login.html")
-
 
 
 @app.route("/main", methods=["GET", "POST"])
 def main():
+    global admin_validated
     if not "username" in session:
         return redirect(url_for("login"))
     main_kwargs={
-            "customers": db.getRecords("placa, tipo, nombre_completo", join_car_abo),
+            "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
             "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
-            "subscribers_ids": db.getRecords("id_abonado", "abonados")
+            "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+            "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas"))
         }
     if request.method == "POST" and "username" in session:
         form_name= request.form.get("form_name")
         if form_name == "ticket_generate":
-            db.addRecord("tickets", request.form.get("car_id"), f"(null, {session['user_id']}, curdate(), curtime())")
-        elif form_name == "":
-            pass
-        elif form_name == "":
-            pass
-        elif form_name == "append_employee":
-            pass
-        elif form_name == "admin_valid":
-            if request.form.get('admin_password') == admin_key:
-                return render_template("main.html", admin_validated=1, **main_kwargs)
+            car_ids= db.getRecords("placa", "vehiculos")
+            car_dates= [request.form.get("car_id"), request.form.get("car_type"), request.form.get('subscriber_id')]
+            if car_dates[2]!="":
+                db.addRecordIgnore("vehiculos", f"('{car_dates[0]}', {int(car_dates[2])}, '{car_dates[1]}')")
             else:
-                return render_template("main.html", admin_validated=0, **main_kwargs)
-
+                db.addRecordIgnore("vehiculos", f"('{car_dates[0]}', null, '{car_dates[1]}')")
+            db.addRecord("tickets", f"(null, '{ car_dates[0] }', '{session['user_id']}', curdate(), curtime())")
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+        elif form_name == "generate_boleta":
+            id_ticket= request.form.get("ticket_id")
+            datas= db.getConditionalRecords("tarifa, hora_inicio", db.join("playas", "tickets"), f"id_ticket={ id_ticket }")
+            actual= str(datetime.now().time())
+            minutes= int(db.query_executor(f"TIMESTAMPDIFF(minute, time({ datas[1] }), time({ actual }))"))
+            minutes= minutes/60
+            db.addRecord("boletas", f"(null, { id_ticket }, { int(datas[0])*minutes })")
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+        elif form_name=="add_subscriber":
+            subscriber_data=[request.form.get("subs_fullname"), request.form.get("subs_init"), request.form.get("subs_end"), float(request.form.get("subs_pension"))]
+            db.addRecord("abonados", f"(null, '{subscriber_data[0]}', date({subscriber_data[1]}), date({subscriber_data[2]}), '{subscriber_data[3]}')")
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+        elif form_name == "delete_employee":
+            employee_id= int(request.form.get('employee_id'))
+            db.deleteRecords("empleados", f"id_empleado= {employee_id}")
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=1, **main_kwargs)
+        elif form_name == "append_employee": #Agregar registro a Empleados
+            employee_data= [int(request.form.get('doc_id')), request.form.get('fullname'), int(request.form.get('phone')), float(request.form.get('salary'))]
+            db.addRecord("empleados", f"({employee_data[0]}, '{employee_data[1]}', {employee_data[2]}, {employee_data[3]})")
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+        elif form_name == "admin_valid": #Validar contraseña del administrador
+            if request.form.get('admin_password') == admin_key:
+                admin_validated=1
+                return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+            else:
+                return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+        elif form_name == "delete_employee": #Eliminar un empleado de la BBDD
+            employee_id= int(request.form.get('employee_id'))
+            db.deleteRecords('empleados', f'id={int(employee_id)}')
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
+        elif form_name == "modify_employee": #Modificar datos de un empleado de la BBDD
+            employee_id= int(request.form.get('employee_id'))
+            employee_data= db.getConditionalRecord('phone, salary', 'empleados', f'id_empleado={ employee_id }')
+            empl_phone= int(request.form.get('new_phone')) if request.form.get('new_phone')!="" else employee_data[0] 
+            empl_salary= float(request.form.get('new_salary')) if request.form.get('new_salary')!="" else employee_data[1]
+            db.modRecords("empleados", f"salario={ empl_salary }, telefono={ empl_phone }", f"id_empleado={ employee_id }")
+            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
     elif request.method != "POST" and "username" in session:
-        return render_template("main.html", admin_validated=0, **main_kwargs)
+        return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
 
 @app.route("/logout")
 def logout():
+    global admin_validated
     if "username" in session:
         session.clear()
+        admin_validated= 0
     return redirect(url_for("init"))
 
 

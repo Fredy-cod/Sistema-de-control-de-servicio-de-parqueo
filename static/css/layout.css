@@ -80,6 +80,11 @@ menu {
 .modify:hover {
     background-color: rgb(89, 170, 92);
 }
+.advertisement {
+    font-size: 0.8rem;
+    color: rgb(124, 84, 84);
+    font-style: italic;
+}
 
 a {
     background-color: transparent;
