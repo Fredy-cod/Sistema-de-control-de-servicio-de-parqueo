@@ -1,3 +1,16 @@
+body {
+    font-family: 'Cambria', Times, serif;
+}
+
+a {
+    background-color: transparent;
+    color: rgb(117, 105, 105);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.5rem;
+}
+
 #home_content {
     display: block;
     box-sizing: border-box;
@@ -6,7 +19,7 @@
 
 #menu {
     text-align: right;
-    background-color: rgb(132, 177, 218);
+    background-color: rgb(45, 48, 51);
     padding: 0.3rem 0.2rem;
 }
 
@@ -14,4 +27,7 @@
 
 #presentation {
     min-height: 65rem;
+    font-size: small;
+    min-height: 65rem;
 }
+

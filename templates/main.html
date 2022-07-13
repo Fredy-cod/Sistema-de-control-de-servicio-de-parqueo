@@ -2,10 +2,10 @@
 
 {% block style_css %}<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />{% endblock %}
 {% block script %}<script src="{{ url_for('static', filename='js/main.js') }}" ></script>
-<script> window.addEventListener('load', enabled_admin_buttons("{{ admin_validated }}")) </script>{% endblock %}
-<script>
-    
-</script>
+<script> window.addEventListener('load', enabled_admin_buttons("{{ admin_validated }}")) </script>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>{% endblock %}
+
+
 {% block content %}
 <div id="container">
     <menu id="menu">
@@ -18,8 +18,8 @@
             <ul id="option1" class="sel_option"><a href="#"><i class="fa fa-id-card"></i> Generar Ticket de Estacionamiento</a></ul>
             <ul id="option2" class="sel_option"><a href="#"><i class="fa fa-clipboard-list"></i> Ver Historial de Tickets</a></ul>
             <ul id="option3" class="sel_option"><a href="#"><i class="fa fa-registered"></i> Ver Historial de Boletas Generadas</a></ul>  
-            <ul id="option4" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Ver Vehículos Dentro del Estacionamiento</a></ul>   
-            <ul id="option5" class="sel_option"><a href="#"><i class="fa fa-user-lock"></i> Administrar empleados</a></ul>   
+            <!--<ul id="option4" class="sel_option"><a href="#"><i class="fa fa-car-side"></i> Ver Vehículos Dentro del Estacionamiento</a></ul>  --> 
+            <ul id="option4" class="sel_option"><a href="#"><i class="fa fa-user-lock"></i> Administrar empleados</a></ul>   
         </li>
     </aside>
     <div id="main_content">
@@ -56,7 +56,7 @@
             </section>
             <section id="cars_table">
                 <p class="subtitle">Historial de Abonados Registrados</p>
-                <table>
+                <table id="subscriber_report">
                     <tr>
                         <th>ID DEL ABONADO</th>
                         <th>NOMBRES Y APELLIDOS</th>
@@ -81,10 +81,45 @@
                         <b>Sin datos registrados.</b>
                     </th>
                 {% endif %}
+                <br><button class="button modify" onclick="ExportToExcel('subscriber_report','xlsx')" >Generar Reporte</button>
             </section>
         </div>
         <div id="content2" class="main_contents">
-            content2
+            <section id="tickets_table">
+                <p class="subtitle">Historial de tickets</p>
+                <table id="tickets_report">
+                    <tr>
+                        <th>ID DEL TICKET</th>
+                        <th>PLACA DEL VEHÍCULO</th>
+                        <th>HORA DE INGRESO</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                    {% for index in range((NoBoletas|count)) %}
+                        <tr>
+                            <td>{{ NoBoletas[index][0] }}</td>
+                            <td>{{ NoBoletas[index][1] }}</td>
+                            <td>{{ NoBoletas[index][2] }}</td>
+                            <td class="ticket_buttons"><form action="{{ url_for('main') }}" method="post">
+                                <input type="hidden" name="form_name" value="delete_ticket">
+                                <input type="hidden" name="ticket_id" value="{{ NoBoletas[index][0] }}">
+                                <button class="button delete" type="submit"><i class="fas fa-user-edit"></i> DEL</button>
+                            </form>
+                            <form action="{{ url_for('main') }}" method="post">
+                                <input type="hidden" name="form_name" value="gen_boleta">
+                                <input type="hidden" name="ticket_id" value="{{ NoBoletas[index][0] }}">
+                                <button class="button modify" type="submit"><i class="fas fa-user-edit"></i> PAG</button>
+                            </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if NoBoletas|count == 0 %}
+                    <th>
+                        <b>Sin datos registrados.</b>
+                    </th>
+                {% endif %}
+                <br><button class="button modify" onclick="ExportToExcel('tickets_report','xlsx')" >Generar Reporte</button>
+            </section>
         </div>
         <div id="content3" class="main_contents">
             <section id="tickets_quantity">
@@ -92,7 +127,7 @@
                 <h4>Cantidad: {{ boletas|count }}</h4>
             </section>
             <section id="tickets_table">
-                <table>
+                <table id="boletas_report">
                     <tr>
                         <th>ID BOLETA</th>
                         <th>PLACA</th>
@@ -115,12 +150,35 @@
                         <b>Sin datos registrados.</b>
                     </th>
                 {% endif %}
+                <br><button class="button modify" onclick="ExportToExcel('boletas_report','xlsx')" >Generar Reporte</button>
             </section>
         </div>
+        <!--<div id="content4" class="main_contents">
+            <section id="tickets_table">
+                <p class="subtitle">Historial de tickets</p>
+                <table>
+                    <tr>
+                        <th>ID DEL TICKET</th>
+                        <th>PLACA DEL VEHÍCULO</th>
+                        <th>HORA DE INGRESO</th>
+                    </tr>
+                    {% for index in range((NoBoletas|count)) %}
+                        <tr>
+                            <td>{{ NoBoletas[index][0] }}</td>
+                            <td>{{ NoBoletas[index][1] }}</td>
+                            <td>{{ NoBoletas[index][2] }}</td>
+                            
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if NoBoletas|count == 0 %}
+                    <th>
+                        <b>Sin datos registrados.</b>
+                    </th>
+                {% endif %}
+            </section>
+        </div>-->
         <div id="content4" class="main_contents">
-            content4
-        </div>
-        <div id="content5" class="main_contents">
             <section id="admin_validation">
                 <form action="{{ url_for('main') }}" method="post">
                     <input type="hidden" name="form_name" value="admin_valid" required>
@@ -149,7 +207,7 @@
             </section>
             <section id="employees_table">
                 <p class="subtitle">Historial de empleados que trabajan en la playa</p>
-                <table>
+                <table id="employees_report">
                     <tr>
                         <th>DOC. DE IDENTIDAD</th>
                         <th>NOMBRES Y APELLIDOS</th>
@@ -178,6 +236,7 @@
                         <b>Sin datos registrados.</b>
                     </th>
                 {% endif %}
+                <br><button class="button modify" onclick="ExportToExcel('employees_report','xlsx')" >Generar Reporte</button>
             </section>
             <section id="empl_mod_data" style="display: none;">
                 <p class="subtitle" id="empl_data"></p>

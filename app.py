@@ -47,8 +47,9 @@ def login():
                     "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
                     "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
                     "subscribers_ids": db.getRecords("id_abonado", "abonados"),
-                    "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas"))
-                }
+                    "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                    "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+                    }
                 return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
     return render_template("login.html")
 
@@ -62,8 +63,9 @@ def main():
             "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
             "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
             "subscribers_ids": db.getRecords("id_abonado", "abonados"),
-            "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas"))
-        }
+            "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+            "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+            }
     if request.method == "POST" and "username" in session:
         form_name= request.form.get("form_name")
         if form_name == "ticket_generate":
@@ -74,31 +76,61 @@ def main():
             else:
                 db.addRecordIgnore("vehiculos", f"('{car_dates[0]}', null, '{car_dates[1]}')")
             db.addRecord("tickets", f"(null, '{ car_dates[0] }', '{session['user_id']}', curdate(), curtime())")
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+                }
             return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
-        elif form_name == "generate_boleta":
+        elif form_name == "gen_boleta":
             id_ticket= request.form.get("ticket_id")
             datas= db.getConditionalRecords("tarifa, hora_inicio", db.join("playas", "tickets"), f"id_ticket={ id_ticket }")
             actual= str(datetime.now().time())
             minutes= int(db.query_executor(f"TIMESTAMPDIFF(minute, time({ datas[1] }), time({ actual }))"))
             minutes= minutes/60
-            db.addRecord("boletas", f"(null, { id_ticket }, { int(datas[0])*minutes })")
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            db.addRecord("boletas", f"(null, { id_ticket }, { float(int(datas[0])*minutes) }, curtime())")
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+                }
             return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
         elif form_name=="add_subscriber":
             subscriber_data=[request.form.get("subs_fullname"), request.form.get("subs_init"), request.form.get("subs_end"), float(request.form.get("subs_pension"))]
             db.addRecord("abonados", f"(null, '{subscriber_data[0]}', date({subscriber_data[1]}), date({subscriber_data[2]}), '{subscriber_data[3]}')")
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+                }
             return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
         elif form_name == "delete_employee":
             employee_id= int(request.form.get('employee_id'))
             db.deleteRecords("empleados", f"id_empleado= {employee_id}")
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+                }
             return render_template("main.html", admin_validated=1, **main_kwargs)
         elif form_name == "append_employee": #Agregar registro a Empleados
             employee_data= [int(request.form.get('doc_id')), request.form.get('fullname'), int(request.form.get('phone')), float(request.form.get('salary'))]
-            db.addRecord("empleados", f"({employee_data[0]}, '{employee_data[1]}', {employee_data[2]}, {employee_data[3]})")
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            db.addRecordIgnore("empleados", f"({employee_data[0]}, {session['user_id']},'{employee_data[1]}', {employee_data[2]}, {employee_data[3]})")
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+                }
             return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
         elif form_name == "admin_valid": #Validar contraseña del administrador
             if request.form.get('admin_password') == admin_key:
@@ -108,16 +140,28 @@ def main():
                 return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
         elif form_name == "delete_employee": #Eliminar un empleado de la BBDD
             employee_id= int(request.form.get('employee_id'))
-            db.deleteRecords('empleados', f'id={int(employee_id)}')
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            db.deleteRecords('empleados', f'id_empleado={int(employee_id)}')
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+            }
             return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
         elif form_name == "modify_employee": #Modificar datos de un empleado de la BBDD
             employee_id= int(request.form.get('employee_id'))
-            employee_data= db.getConditionalRecord('phone, salary', 'empleados', f'id_empleado={ employee_id }')
+            employee_data= db.getConditionalRecord('telefono, salario, nombre_completo', 'empleados', f"id_empleado= '{ employee_id }'")
             empl_phone= int(request.form.get('new_phone')) if request.form.get('new_phone')!="" else employee_data[0] 
             empl_salary= float(request.form.get('new_salary')) if request.form.get('new_salary')!="" else employee_data[1]
-            db.modRecords("empleados", f"salario={ empl_salary }, telefono={ empl_phone }", f"id_empleado={ employee_id }")
-            db.actualization(main_kwargs, join_car_abo, session['user_id']) # Actualizacion
+            db.modRecords("empleados", f"salario={ empl_salary }, telefono={ empl_phone }", f"nombre_completo='{ employee_data[2] }'")
+            main_kwargs={
+                "subscribers": db.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
+                "employees": db.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={session['user_id']}"),
+                "subscribers_ids": db.getRecords("id_abonado", "abonados"),
+                "boletas": db.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", db.join("tickets", "boletas")),
+                "NoBoletas": db.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa = {session['user_id']} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc")
+            }
             return render_template("main.html", admin_validated=admin_validated, **main_kwargs)
     elif request.method != "POST" and "username" in session:
         return render_template("main.html", admin_validated=admin_validated, **main_kwargs)

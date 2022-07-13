@@ -128,9 +128,10 @@ class database:
             #self.cursor.close()"""
 
     def actualization(self, main_kwargs, join_car_abo, user_id):
-        main_kwargs={
+        main_kwargs= {
             "subscribers": self.getRecords("abonados.id_abonado, nombre_completo, fecha_inicio, fecha_final, placa, tipo", join_car_abo),
             "employees": self.getConditionalRecords("doc_id, nombre_completo, telefono, concat('S/.',salario)", "empleados", f"id_playa={user_id}"),
             "subscribers_ids": self.getRecords("id_abonado", "abonados"),
-            "boletas": self.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", self.join("tickets", "boletas"))
+            "boletas": self.getRecords("id_boleta, id_vehiculo, hora_ingreso, hora_salida, precio", self.join("tickets", "boletas")),
+            "NoBoletas": self.getRecords("tickets.id_ticket, placa, hora_ingreso ",f"vehiculos inner join tickets on tickets.id_vehiculo = vehiculos.placa and tickets.id_playa =  {user_id} inner join boletas on tickets.id_ticket != boletas.id_ticket order by tickets.id_ticket desc;")
         }
